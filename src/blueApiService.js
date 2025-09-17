@@ -2,12 +2,13 @@ import axios from 'axios';
 
 export class BlueApiService {
   constructor() {
-    this.apiToken = process.env.BLUE_API_TOKEN;
+    this.tokenId = process.env.BLUE_TOKEN_ID;
+    this.tokenSecret = process.env.BLUE_TOKEN_SECRET;
     this.companyId = process.env.BLUE_COMPANY_ID;
     this.baseUrl = 'https://api.blue.cc/graphql';
-    
-    if (!this.apiToken) {
-      throw new Error('BLUE_API_TOKEN is required');
+
+    if (!this.tokenId || !this.tokenSecret) {
+      throw new Error('BLUE_TOKEN_ID and BLUE_TOKEN_SECRET are required');
     }
   }
 
@@ -18,8 +19,10 @@ export class BlueApiService {
         variables
       }, {
         headers: {
-          'Authorization': `Bearer ${this.apiToken}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Bloo-Token-ID': this.tokenId,
+          'X-Bloo-Token-Secret': this.tokenSecret,
+          'X-Bloo-Company-ID': this.companyId,
         }
       });
 
@@ -269,13 +272,9 @@ ${newDesc}`;
       }
     `;
 
-    try {
-      const data = await this.makeGraphQLRequest(query, { id: this.companyId });
-      return data.company;
-    } catch (error) {
-      console.error('Error fetching company info:', error);
-      return null;
-    }
+    // No try/catch needed here. Let errors from makeGraphQLRequest propagate.
+    const data = await this.makeGraphQLRequest(query, { id: this.companyId });
+    return data.company;
   }
 
   async validateConnection() {

@@ -118,6 +118,33 @@ export class GoogleDriveService {
     return transcriptions;
   }
 
+  async getSpecificDocument(documentId) {
+    if (!this.drive) {
+      await this.authenticate();
+    }
+
+    try {
+      // Get document metadata
+      const fileMetadata = await this.drive.files.get({
+        fileId: documentId,
+        fields: 'name, mimeType, modifiedTime'
+      });
+
+      // Download content
+      const content = await this.downloadFileContent(documentId);
+
+      return {
+        id: documentId,
+        name: fileMetadata.data.name,
+        content: content,
+        modifiedTime: fileMetadata.data.modifiedTime
+      };
+    } catch (error) {
+      console.error(`Error getting document ${documentId}:`, error);
+      throw error;
+    }
+  }
+
   generateAuthUrl() {
     if (!this.auth) {
       throw new Error('Authentication not initialized');

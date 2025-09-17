@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import dotenv from 'dotenv';
 import { MeetingScheduler } from './scheduler.js';
 
@@ -7,8 +6,9 @@ dotenv.config();
 
 // Validate required environment variables
 const requiredEnvVars = [
-  'BLUE_API_TOKEN',
-  'OPENAI_API_KEY',
+  'BLUE_TOKEN_ID',
+  'BLUE_TOKEN_SECRET',
+  'ANTHROPIC_API_KEY',
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET'
 ];
@@ -41,8 +41,9 @@ async function main() {
 
     switch (command) {
       case 'run-once':
+        const documentId = args[1];
         console.log('🏃 Running one-time processing...');
-        const results = await scheduler.runOnce();
+        const results = await scheduler.runOnce(documentId);
         console.log('✅ One-time processing completed');
         process.exit(0);
         break;
@@ -107,6 +108,35 @@ async function main() {
         process.exit(0);
         break;
 
+      case 'test-claude':
+        console.log('🧪 Testing Claude connection...');
+        const claudeConnected = await scheduler.claudeService.validateConnection();
+        if (claudeConnected) {
+          console.log('✅ Claude connected successfully');
+        } else {
+          console.log('❌ Claude connection failed');
+        }
+        process.exit(0);
+        break;
+
+      case 'process-document':
+        const docId = args[1];
+        if (!docId) {
+          console.error('❌ Please provide the document ID');
+          console.error('Usage: node src/index.js process-document <document-id>');
+          process.exit(1);
+        }
+        
+        console.log(`🏃 Processing document: ${docId}`);
+        try {
+          const docResults = await scheduler.processSpecificDocument(docId);
+          console.log('✅ Document processing completed');
+        } catch (error) {
+          console.error('❌ Document processing failed:', error.message);
+        }
+        process.exit(0);
+        break;
+
       case 'schedule':
         const cronPattern = args[1];
         console.log('⏰ Starting scheduled mode...');
@@ -134,29 +164,32 @@ async function main() {
       case 'help':
       case undefined:
         console.log(`
-📋 Meeting Transcription Manager
+📋 Meeting Summary Task Manager
 
 Available commands:
 
-  🏃 run-once           Run transcription processing once
-  ⏰ schedule [cron]    Start scheduled processing (default: weekdays at 9 AM)
-  🔐 auth               Setup Google Drive authentication
-  🔑 auth-token <code>  Save Google OAuth token
-  📊 status             Show system status
-  🧪 test-blue          Test Blue.cc API connection
-  ❓ help               Show this help message
+  🏃 run-once [doc-id]     Process default document or specified document ID
+  📄 process-document <id> Process specific Google Doc by ID
+  ⏰ schedule [cron]       Start scheduled processing (default: weekdays at 9 AM)
+  🔐 auth                  Setup Google Drive authentication
+  🔑 auth-token <code>     Save Google OAuth token
+  📊 status                Show system status
+  🧪 test-blue             Test Blue.cc API connection
+  🧪 test-claude           Test Claude API connection
+  ❓ help                  Show this help message
 
 Examples:
   node src/index.js run-once
+  node src/index.js process-document 1EvSaGqtGxDiyiWtQXTaC_EVQsZ-96vgO9gaQhjX36Lw
   node src/index.js schedule
   node src/index.js schedule "0 10 * * 1-5"  # 10 AM on weekdays
   node src/index.js auth
   
 Environment Setup:
   1. Copy .env.example to .env
-  2. Fill in your API keys and configuration
+  2. Fill in your API keys: BLUE_API_TOKEN, ANTHROPIC_API_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
   3. Run 'node src/index.js auth' to setup Google authentication
-  4. Run 'node src/index.js test-blue' to verify Blue.cc connection
+  4. Run 'node src/index.js test-blue' and 'node src/index.js test-claude' to verify connections
 `);
         break;
 

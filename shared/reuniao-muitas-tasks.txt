@@ -1,0 +1,45 @@
+**Transcrição da Reunião de Planejamento - Projeto Phoenix - 23/09/2025**
+
+**Participantes:**
+- Sofia (Product Owner)
+- Lucas (Tech Lead)
+- Beatriz (Desenvolvedora Frontend)
+- Rafael (Desenvolvedor Backend)
+- Clara (UX/UI Designer)
+
+**Pauta:**
+- Definição das features para a Sprint 3
+- Alinhamento técnico
+- Distribuição de tarefas
+
+**Discussão:**
+
+**Sofia:** Olá, time. O objetivo hoje é quebrar as épicas de 'Gestão de Perfil' e 'Notificações' em histórias de usuário e tarefas concretas. Para 'Gestão de Perfil', precisamos permitir que o usuário edite nome, foto e senha.
+
+**Lucas:** Certo. Para a edição de nome e senha, o backend precisa de um novo endpoint PATCH. **(Ação: Rafael deve desenvolver o endpoint PATCH /users/me/profile para atualização de dados)**. Para a foto, vamos usar um serviço de upload. **(Ação: Rafael precisa pesquisar e escolher um serviço de armazenamento de arquivos, como S3 ou Google Cloud Storage)**.
+
+**Beatriz:** No frontend, vou criar a página de edição de perfil. **(Ação: Beatriz deve criar o componente React para o formulário de edição de perfil do usuário)**. Também preciso do design final da Clara.
+
+**Clara:** O design da página de perfil já está no Figma. Vou apenas ajustar o fluxo de upload de imagem. **(Ação: Clara deve finalizar o protótipo de alta fidelidade para o upload de foto de perfil até amanhã, 24/09)**.
+
+**Sofia:** Perfeito. Agora, sobre 'Notificações'. A primeira fase é ter notificações via e-mail para novas mensagens.
+
+**Lucas:** Ok. Precisamos de um serviço de e-mail. **(Ação: Lucas deve configurar o serviço de envio de e-mails, como SendGrid ou Mailgun)**. E um worker para processar a fila de envio.
+
+**Rafael:** Eu posso criar o worker. **(Ação: Rafael deve implementar um worker para processar a fila de notificações por e-mail)**. O prazo é até o final da sprint.
+
+**Beatriz:** E eu preciso de um endpoint para buscar as notificações não lidas. **(Ação: Rafael deve criar um endpoint GET /notifications para listar as notificações do usuário)**.
+
+**Sofia:** Além disso, temos alguns débitos técnicos. A biblioteca de gráficos está desatualizada.
+
+**Lucas:** Verdade. **(Ação: Beatriz deve atualizar a biblioteca de gráficos (Chart.js) para a última versão e verificar a compatibilidade)**.
+
+**Clara:** Notei que a paleta de cores do modo escuro está inconsistente. **(Ação: Clara precisa revisar e unificar a paleta de cores do dark mode em todo o sistema)**.
+
+**Sofia:** E, por fim, a documentação da API precisa ser atualizada com os novos endpoints de perfil.
+
+**Lucas:** Certo. **(Ação: Rafael deve documentar os novos endpoints da API de perfil no Swagger/OpenAPI)**.
+
+**Beatriz:** Uma última coisa, o build do frontend está muito lento. **(Ação: Beatriz deve investigar e otimizar o tempo de build do Webpack para o projeto frontend)**.
+
+**Sofia:** Ótimo, temos muitas tarefas. Vamos organizar tudo no nosso board. Bom trabalho, pessoal!

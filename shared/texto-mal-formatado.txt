@@ -1,0 +1,15 @@
+reuniao dia 22
+
+participantes: joao, maria
+
+maria: eu tenho que fazer o deploy da api ate amanha. (acao: deploy api gateway maria)
+
+joao: ok. eu vou revisar o codigo. e tambem preciso criar os testes para o frontend, o prazo é sexta. acao: joao escrever testes e2e.
+
+ana falou que o bug 123 ainda esta em aberto. gabriel, verificar.
+
+(acao para gabriel: olhar o bug 123)
+
+esqueceram de falar da documentacao. quem faz? acao: documentar api
+
+ultima coisa: pedro fazer o relatorio semanal. ate 26/09

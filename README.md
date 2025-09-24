@@ -1,202 +1,278 @@
-# 🎯 Meeting Transcription Manager
+# Blue Dashboard - Task Extractor
 
-Sistema automatizado para processar transcrições de reuniões do Google Meet, criar resumos inteligentes e gerenciar tarefas no Blue.cc.
+Bem-vindo ao Blue Dashboard, uma aplicação full-stack que utiliza Inteligência Artificial (Google Gemini) para extrair tarefas, ações e pendências de documentos de texto, como atas de reunião. O sistema é composto por um backend Node.js (Express) e um frontend Streamlit (Python).
 
-## 🚀 Funcionalidades
+## Funcionalidades
 
-- **📄 Extração de Transcrições**: Busca automática por transcrições do Google Meet no Google Drive
-- **🤖 Resumos Inteligentes**: Análise de transcrições usando IA para extrair informações relevantes
-- **✅ Gerenciamento de Tarefas**: Criação e atualização automática de tarefas no Blue.cc
-- **🔍 Detecção de Similaridade**: Evita duplicação identificando tarefas similares existentes
-- **⏰ Agendamento**: Execução automática de segunda a sexta-feira
+- **Extração Inteligente de Tarefas:** Utiliza o modelo Gemini 1.5 Flash para identificar e estruturar tarefas, responsáveis, prioridades e prazos a partir de texto livre.
+- **Interface Amigável:** Frontend intuitivo em Streamlit para upload de arquivos ou inserção de texto direto.
+- **Visualização de Resultados:** Exibição clara das tarefas extraídas, com opções de filtro, ordenação e exportação (JSON/CSV).
+- **Histórico de Processamentos:** Mantenha um registro das suas análises anteriores.
+- **Estatísticas:** Gráficos e métricas para entender a distribuição das tarefas.
+- **Sistema de Logging Robusto:** Backend com logging configurável por nível e saída (console/arquivo).
+- **Testes Abrangentes:** Conjunto de testes para CLI, API e UI para garantir a estabilidade do sistema.
 
-## 📋 Pré-requisitos
+## Estrutura do Projeto
 
-- Node.js 18+ 
-- Conta no Blue.cc com API habilitada
-- Conta Google com acesso ao Google Drive
-- Chave da API OpenAI
+```
+blue-dashboard/
+├── backend/                  # Aplicação Node.js (Express) para a API e lógica de IA
+│   ├── src/                  # Código fonte do backend
+│   │   ├── app.js            # Configuração principal do Express
+│   │   ├── cli.js            # Interface de Linha de Comando (CLI)
+│   │   ├── server.js         # Ponto de entrada do servidor
+│   │   ├── controllers/      # Controladores da API
+│   │   ├── models/           # Modelos de dados (e.g., Task.js)
+│   │   ├── routes/           # Definições de rotas da API
+│   │   ├── services/         # Serviços de lógica de negócio (e.g., GoogleAIService.js)
+│   │   └── utils/            # Utilitários (e.g., Logger.js)
+│   └── tests/                # Testes do backend
+├── frontend/                 # Aplicação Streamlit (Python) para a interface do usuário
+│   ├── components/           # Componentes reutilizáveis da UI
+│   ├── services/             # Cliente da API para comunicação com o backend
+│   ├── utils/                # Utilitários do frontend
+│   └── app.py                # Aplicação principal do Streamlit
+├── shared/                   # Arquivos e dados compartilhados (e.g., arquivos de exemplo)
+├── .env.example              # Exemplo de variáveis de ambiente
+├── package.json              # Dependências e scripts do projeto Node.js
+├── requirements.txt          # Dependências do projeto Python
+└── run-full-test.sh          # Script para executar todos os testes
+```
 
-## 🔧 Configuração
+## Setup e Instalação
 
-### 1. Instalação
+Siga os passos abaixo para configurar e rodar a aplicação localmente.
+
+### Pré-requisitos
+
+- Node.js (v18 ou superior)
+- npm (gerenciador de pacotes do Node.js)
+- Python (v3.8 ou superior)
+- pip (gerenciador de pacotes do Python)
+- Uma chave de API do Google AI Studio (Gemini). Você pode obtê-la em [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+### 1. Clonar o Repositório
 
 ```bash
+git clone https://github.com/seu-usuario/blue-dashboard.git
+cd blue-dashboard
+```
+
+### 2. Configurar Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do diretório `backend/` e outro na raiz do diretório `frontend/` com base nos arquivos `.env.example` fornecidos.
+
+**`backend/.env`:**
+
+```env
+PORT=3000
+GOOGLE_AI_API_KEY=SUA_CHAVE_API_DO_GOOGLE_AI
+# Opcional: Configurações para integração com Google Drive (se aplicável)
+GOOGLE_DRIVE_CLIENT_ID=
+GOOGLE_DRIVE_CLIENT_SECRET=
+GOOGLE_DRIVE_REDIRECT_URI=
+
+# Configurações de Logging
+LOG_LEVEL=info # Níveis: debug, info, warn, error
+LOG_FILE_PATH=./app.log # Opcional: caminho para o arquivo de log (ex: ./app.log)
+```
+
+**`frontend/.env`:**
+
+```env
+API_BASE_URL=http://127.0.0.1:3000/api # Certifique-se de que a porta corresponde à do backend
+```
+
+### 3. Instalar Dependências do Backend
+
+```bash
+cd backend
 npm install
+cd ..
 ```
 
-### 2. Configuração de Ambiente
+### 4. Instalar Dependências do Frontend
 
 ```bash
-cp .env.example .env
+cd frontend
+pip install -r requirements.txt
+cd ..
 ```
 
-Edite o arquivo `.env` com suas credenciais:
+### 5. Rodar a Aplicação
 
-```env
-# Blue.cc API
-BLUE_API_TOKEN=pat_sua_chave_api_aqui
-BLUE_COMPANY_ID=seu-company-id
-
-# OpenAI
-OPENAI_API_KEY=sua-chave-openai
-
-# Google Drive API
-GOOGLE_CLIENT_ID=seu-google-client-id
-GOOGLE_CLIENT_SECRET=seu-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
-
-# Configurações opcionais
-TRANSCRIPTIONS_FOLDER_ID=id-da-pasta-google-drive
-SCHEDULE_CRON=0 9 * * 1-5
-```
-
-### 3. Autenticação Google Drive
+#### Iniciar o Backend (API)
 
 ```bash
-# Inicia processo de autenticação
-node src/index.js auth
-
-# Após autorizar, salve o token
-node src/index.js auth-token <codigo-de-autorizacao>
+cd backend
+npm start
 ```
 
-### 4. Teste de Conexão
+O servidor backend estará rodando em `http://localhost:3000` (ou na porta configurada no `.env`).
+
+#### Iniciar o Frontend (Streamlit)
+
+Em um novo terminal, na raiz do projeto:
 
 ```bash
-# Testa conexão com Blue.cc
-node src/index.js test-blue
-
-# Verifica status do sistema
-node src/index.js status
+cd frontend
+streamlit run app.py
 ```
 
-## 📱 Uso
+O frontend será aberto automaticamente no seu navegador, geralmente em `http://localhost:8501`.
 
-### Comandos Disponíveis
+## Uso da CLI (Backend)
+
+O backend também oferece uma interface de linha de comando para processar arquivos diretamente.
 
 ```bash
-# Execução única
-node src/index.js run-once
-
-# Modo agendado (padrão: dias úteis às 9h)
-node src/index.js schedule
-
-# Modo agendado personalizado
-node src/index.js schedule "0 10 * * 1-5"  # 10h nos dias úteis
-
-# Configuração de autenticação
-node src/index.js auth
-node src/index.js auth-token <codigo>
-
-# Utilitários
-node src/index.js status
-node src/index.js test-blue
-node src/index.js help
+cd backend
+node src/cli.js process "/caminho/para/seu/arquivo.txt" --save -o saida.json
+node src/cli.js batch "/caminho/para/seu/diretorio" --save
 ```
 
-### Scripts NPM
+## Testes
+
+Para rodar todos os testes (backend CLI, backend API e frontend UI), execute o script na raiz do projeto:
 
 ```bash
-npm start          # Modo agendado padrão
-npm run dev        # Desenvolvimento com reload
+./run-full-test.sh
 ```
 
-## 🔄 Fluxo de Funcionamento
+Este script iniciará os servidores em background, executará os testes e fará a limpeza.
 
-1. **📂 Busca**: Identifica transcrições recentes no Google Drive
-2. **📋 Análise**: Processa o conteúdo usando IA para extrair:
-   - Resumo executivo
-   - Participantes
-   - Decisões tomadas
-   - **Tarefas identificadas**
-   - Próximos passos
-   - Prazos mencionados
+## Documentação da API
 
-3. **🔍 Verificação**: Para cada tarefa identificada:
-   - Busca tarefas similares no Blue.cc
-   - Se encontrar (>70% similaridade): atualiza a existente
-   - Se não encontrar: cria nova tarefa
+As rotas da API são definidas em `backend/src/routes/api.js`. Para uma documentação mais detalhada, você pode usar ferramentas como JSDoc para gerar documentação a partir dos comentários no código ou integrar uma solução como Swagger/OpenAPI.
 
-4. **📊 Relatório**: Exibe resumo do processamento
+**Endpoints Principais:**
 
-## 🏗️ Estrutura do Projeto
+- `GET /api/health`: Verifica o status da API.
+- `POST /api/upload`: Faz upload de um arquivo de texto e extrai tarefas.
+- `POST /api/process-text`: Processa texto diretamente e extrai tarefas.
+- `POST /api/process-file`: Processa um arquivo local no servidor (usado internamente pela CLI e outros serviços).
 
+## Guia de Solução de Problemas (Troubleshooting)
+
+- **API indisponível no frontend:**
+    - Verifique se o backend está rodando (`npm start` no diretório `backend`).
+    - Confirme se `API_BASE_URL` no `frontend/.env` corresponde à porta do backend.
+    - Verifique o console do backend para erros de inicialização.
+- **Erro de chave de API do Google AI:**
+    - Certifique-se de que `GOOGLE_AI_API_KEY` está corretamente configurada em `backend/.env`.
+    - Verifique se a chave é válida e tem permissões para o modelo Gemini 1.5 Flash.
+- **Nenhuma tarefa extraída ou resultados inesperados:**
+    - O modelo de IA pode ter dificuldade com textos muito ambíguos ou mal formatados. Tente refinar o texto de entrada.
+    - Verifique os logs do backend (se `LOG_FILE_PATH` estiver configurado) para mensagens de erro da API do Google AI.
+- **Problemas de dependências:**
+    - Certifique-se de que `npm install` (backend) e `pip install -r requirements.txt` (frontend) foram executados sem erros.
+
+## Configurações de Produção (Opcional)
+
+Para um ambiente de produção, considere as seguintes melhorias:
+
+- **Validação de Ambiente:** Implemente validações mais robustas para todas as variáveis de ambiente críticas.
+- **Rate Limiting:** Use middleware como `express-rate-limit` no backend para proteger contra abusos.
+- **Security Headers:** Utilize `helmet` no Express para configurar cabeçalhos HTTP de segurança.
+- **Monitoramento de Erros:** Integre com serviços como Sentry, New Relic ou Datadog para monitoramento proativo de erros e performance.
+- **HTTPS:** Configure um proxy reverso (Nginx, Caddy) para servir a aplicação via HTTPS.
+- **Gerenciamento de Processos:** Use um gerenciador de processos como PM2 para manter o backend rodando de forma confiável.
+
+## Docker Setup (Opcional)
+
+Para facilitar a implantação e garantir um ambiente consistente, você pode usar Docker.
+
+### Dockerfile para o Backend
+
+Crie um arquivo `Dockerfile` no diretório `backend/`:
+
+```dockerfile
+# backend/Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install --production
+
+COPY . .
+
+EXPOSE 3000
+CMD ["npm", "start"]
 ```
-src/
-├── index.js                 # Aplicação principal
-├── scheduler.js             # Agendamento e orquestração
-├── googleDrive.js          # Interface Google Drive API
-├── transcriptionSummarizer.js # Análise de transcrições com IA
-└── blueApiService.js       # Interface Blue.cc API
+
+### Dockerfile para o Frontend
+
+Crie um arquivo `Dockerfile` no diretório `frontend/`:
+
+```dockerfile
+# frontend/Dockerfile
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 ```
 
-## 🤖 Exemplo de Processamento
+### Docker Compose (na raiz do projeto)
 
-**Transcrição de entrada:**
-> "João, você pode implementar o novo dashboard até sexta? Maria vai revisar o design amanhã."
+Crie um arquivo `docker-compose.yml` na raiz do projeto:
 
-**Tarefas extraídas:**
-- 📋 "Implementar novo dashboard" (Responsável: João, Prazo: sexta-feira)
-- 🎨 "Revisar design do dashboard" (Responsável: Maria, Prazo: amanhã)
+```yaml
+version: '3.8'
 
-## 🔧 Personalização
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app # Para desenvolvimento, remova em produção
 
-### Ajustar Critérios de Similaridade
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/app # Para desenvolvimento, remova em produção
+    depends_on:
+      - backend
 
-Edite `blueApiService.js`, método `searchSimilarTasks()`:
-
-```javascript
-if (similarity > 0.3) { // Ajuste o threshold (0.3 = 30%)
+networks:
+  default:
+    driver: bridge
 ```
 
-### Modificar Prompt de Análise
+Para construir e iniciar os contêineres:
 
-Edite `transcriptionSummarizer.js`, método `summarizeTranscription()` para personalizar como a IA interpreta as transcrições.
-
-### Configurar Agendamento
-
-Use formato cron no arquivo `.env`:
-
-```env
-SCHEDULE_CRON=0 9 * * 1-5    # 9h nos dias úteis
-SCHEDULE_CRON=0 14 * * *     # 14h todos os dias  
-SCHEDULE_CRON=*/30 9-17 * * 1-5  # A cada 30min das 9h-17h nos dias úteis
-```
-
-## 🚨 Troubleshooting
-
-### Problemas de Autenticação Google
 ```bash
-# Re-execute o processo de auth
-node src/index.js auth
-rm token.json  # Remove token antigo se necessário
+docker-compose up --build
 ```
 
-### Erro de Conexão Blue.cc
-- Verifique se `BLUE_API_TOKEN` está correto
-- Confirme se tem permissões para criar/editar tarefas
-- Teste: `node src/index.js test-blue`
+Para parar e remover os contêineres:
 
-### Sem Transcrições Encontradas
-- Verifique `TRANSCRIPTIONS_FOLDER_ID` no .env
-- Confirme que as transcrições contêm palavras-chave como "transcript" ou "transcrição"
-- Teste permissões do Google Drive
+```bash
+docker-compose down
+```
 
-## 📈 Logs e Monitoramento
+## Contribuição
 
-O sistema gera logs detalhados:
-- ✅ Tarefas criadas
-- 🔄 Tarefas atualizadas (com % de similaridade)
-- ❌ Erros encontrados
-- 📊 Resumo de processamento
+Sinta-se à vontade para contribuir! Abra issues para bugs ou sugestões e Pull Requests para novas funcionalidades ou melhorias.
 
-## 🔐 Segurança
+## Licença
 
-- Nunca commite arquivos `.env` ou `token.json`
-- Use tokens com escopo mínimo necessário
-- Revise regularmente as permissões das APIs
-
-## 📞 Suporte
-
-Para problemas relacionados ao Blue.cc API: support@blue.cc
+Este projeto está licenciado sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.

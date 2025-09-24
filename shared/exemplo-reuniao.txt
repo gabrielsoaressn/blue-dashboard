@@ -1,0 +1,37 @@
+
+**Transcrição da Reunião Daily - Equipe Blue - 22/09/2025**
+
+**Participantes:**
+- Gabriel (Scrum Master)
+- Maria (Desenvolvedora)
+- João (Desenvolvedor)
+- Ana (QA)
+
+**Pauta:**
+1.  Revisão do sprint atual
+2.  Bloqueios e impedimentos
+3.  Próximos passos
+
+**Discussão:**
+
+**Gabriel:** Bom dia, pessoal. Vamos começar a daily. Maria, como está o andamento da feature de login?
+
+**Maria:** Bom dia! Estou finalizando os testes de integração. Tive um problema com a API do Google, mas já resolvi. Acredito que até o final do dia de hoje, 22/09, eu subo o PR para revisão. **(Ação: Maria deve criar o Pull Request para a feature de login até o final do dia)**.
+
+**João:** Eu estou trabalhando na refatoração do dashboard. Encontrei alguns componentes legados que precisam ser atualizados. Vou precisar de ajuda da Ana para validar o impacto visual das mudanças. **(Ação: João precisa agendar uma sessão de pair programming com a Ana para validar as mudanças no dashboard)**. O prazo para finalizar a refatoração é sexta-feira, 26/09.
+
+**Ana:** Sem problemas, João. Pode me chamar. Eu terminei os testes da API de pagamentos. Encontrei um bug crítico na validação do CVV. **(Ação: Ana deve registrar o bug do CVV no Jira com prioridade alta)**. Fora isso, preciso que o ambiente de staging seja atualizado com a última versão do backend.
+
+**Gabriel:** Ok, Ana. Vou cuidar disso. **(Ação: Gabriel deve atualizar o ambiente de staging até as 12h)**. Mais algum ponto?
+
+**Maria:** Sim, precisamos definir quem vai documentar a nova API de usuários.
+
+**Gabriel:** Bem lembrado. João, pode ficar responsável por isso?
+
+**João:** Posso sim, mas não consigo entregar essa semana. Pode ser para a próxima sprint?
+
+**Gabriel:** Combinado. **(Ação: João ficou responsável por documentar a API de usuários na próxima sprint)**. Algo mais?
+
+**(Silêncio)**
+
+**Gabriel:** Ótimo. Bom trabalho a todos!
